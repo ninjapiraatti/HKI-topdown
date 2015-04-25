@@ -1,0 +1,9 @@
+
+*.csproj
+/temp
+/library
+/ProjectSettings
+/Assets/Editor
+/Assets/Standard Assets
+*.sublime-project
+*.sublime-workspace
