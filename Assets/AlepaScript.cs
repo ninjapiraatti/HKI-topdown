@@ -3,9 +3,11 @@ using System.Collections;
 
 public class AlepaScript : MonoBehaviour {
 
+	float score = 0.0F;
+
 	// Use this for initialization
 	void Start () {
-	
+
 	}
 	
 	// Update is called once per frame
@@ -18,13 +20,13 @@ public class AlepaScript : MonoBehaviour {
     	GameObject initGame = GameObject.Find("InitCode");
 		InitGame initGameVar = initGame.GetComponent<InitGame>();
 		initGameVar.money = initGameVar.money + (initGameVar.score / 10);
-		initGameVar.score = 0;
-
+	// Convert score to float
+		score = initGameVar.score;
 
 		GameObject getPlayer2 = GameObject.Find("Player2D");
 		PlayerControl playerControlVar = getPlayer2.GetComponent<PlayerControl>();
-		playerControlVar.speed = 1.0f;
+		playerControlVar.carryWeight -= (score * 0.05F);
 
-		Debug.Log(initGameVar.money);
+		initGameVar.score = 0;
     }
 }
