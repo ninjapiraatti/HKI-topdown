@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerControl : MonoBehaviour {
 
+
 	// Use this for initialization
 
 	public float initSpeed = 1.1F;
@@ -13,13 +14,21 @@ public class PlayerControl : MonoBehaviour {
 	public float health = 1.0F;
 	public Text healthString;
 	public float carryWeight = 0.0F;
+	private Animator animator;
 	
-	void Start () {
+	public void Start () {
     	InvokeRepeating("checkRunning", 0, 1.0F);
-    	InvokeRepeating("checkHealth", 0, 4.0F);	
+    	InvokeRepeating("checkHealth", 0, 1.0F);	
     	// Initialize health text
 		GameObject healthObjectVar = GameObject.Find("healthObject");
     	healthString = healthObjectVar.GetComponent<Text>();
+    	animator = this.GetComponent<Animator>();
+    	initSpeed = 1.1F;
+		speed = 1.1F;
+		playerRunning = true;
+		health = 1.0F;
+		carryWeight = 0.0F;
+
 	}
 
 	// Get running variable from InitGame. Doesn't have to be every frame.
@@ -40,6 +49,20 @@ public class PlayerControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		healthString.text= "Stamina: " + health;
+		var horizontal = Input.GetAxis("Horizontal");
+		var vertical = Input.GetAxis("Vertical");
+		if (horizontal > 0)
+        {
+            animator.SetInteger("Direction", 2);
+        }
+        else if (horizontal < 0)
+        {
+            animator.SetInteger("Direction", 1);
+        }
+        else if (horizontal == 0 && vertical == 0)
+        {
+            animator.SetInteger("Direction", 0);
+        }
 		if(playerRunning == true){
 			float translationY = Input.GetAxis("Vertical") * speed;
 	        float translationX = Input.GetAxis("Horizontal") * speed;

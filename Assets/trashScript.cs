@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(AudioSource))]
 public class trashScript : MonoBehaviour {
 
 	// Use this for initialization
@@ -18,5 +19,6 @@ public class trashScript : MonoBehaviour {
     	GameObject getPlayer2 = GameObject.Find("Player2D");
 		PlayerControl playerControlVar = getPlayer2.GetComponent<PlayerControl>();
 		playerControlVar.health = 1.0f;
+		GetComponent<AudioSource>().Play();
 	}
 }

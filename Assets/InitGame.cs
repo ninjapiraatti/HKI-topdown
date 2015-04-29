@@ -10,21 +10,23 @@ public class InitGame : MonoBehaviour {
 	public Text moneyString;
 	public Text timeString;
 	public Text cansString;
-	public float initTime = 20F;
+	public float initTime = 60F;
 	public bool running = true;
+	public bool gameOverBool = false;
 	public int level = 1;
 	public bool showButton = false;
+	public bool showStartButton = true;
 	public Texture btnTexture;
 
 	// Use this for initialization
 	void Start () {
-		for (int y = 0; y < 4; y++) {
-       		float yPos = -1.5f + y;
-        	for (int x = 0; x < 6; x++) {
-        		float xPos = -2.5f + x;
+		for (int y = -4; y < 3; y++) {
+       		//float yPos = -3.5f + y;
+        	for (int x = -3; x < 7; x++) {
+        		//float xPos = -2.5f + x;
         		float spawnOrNot = (Random.Range(-1.0F, 1.0F));
         		if(spawnOrNot > 0){
-        			Instantiate(Can, new Vector3(xPos, yPos, 0), Quaternion.identity);
+        			Instantiate(Can, new Vector3(x, y, 0), Quaternion.identity);
         		} else {
 
         		}            	
@@ -66,7 +68,7 @@ public class InitGame : MonoBehaviour {
     void timeOut () {
     	running = false;
     	if(level > 4){
-    		gameOver();
+    		gameOverBool = true;
     		showButton = false;
     	}
     	else{
@@ -79,19 +81,50 @@ public class InitGame : MonoBehaviour {
     		if(score > 0){
 	    		GUI.contentColor = Color.black;
 	    		GUI.Label(new Rect(0, 30, 230, 20), ("Over the night you lost some cans."));
-    		}
-    	// Restore speed according to lost cans
-    		if(score > level * 2){
-		    	GameObject getPlayer2 = GameObject.Find("Player2D");
-				PlayerControl playerControlVar = getPlayer2.GetComponent<PlayerControl>();
-				playerControlVar.carryWeight -= (level * 0.05F);
     		} else {
     			GameObject getPlayer2 = GameObject.Find("Player2D");
 				PlayerControl playerControlVar = getPlayer2.GetComponent<PlayerControl>();
     			playerControlVar.carryWeight = 0;
     		}
-	    	if (GUI.Button(new Rect(0,0,160,30), "Next Level"))
+	    	if (GUI.Button(new Rect(0,0,160,30), "Next Level")){
+	    	// Restore speed according to lost cans
+	    		if(score > (level * 2)){
+	    			GameObject getPlayer2 = GameObject.Find("Player2D");
+					PlayerControl playerControlVar = getPlayer2.GetComponent<PlayerControl>();
+					playerControlVar.carryWeight -= (level * 0.1F);
+	    		}
 				nextLevel(level);
+			}
+				
+		}
+		if(showStartButton == true){
+			running = false;
+			if (GUI.Button(new Rect(200,200,160,30), "start game")){
+		    	running = true;
+		    	showStartButton = false;
+			}
+
+		}
+		if(gameOverBool == true){
+			running = false;
+			GUI.contentColor = Color.black;
+			GUI.Label(new Rect(0, 30, 260, 20), ("Game over! You collected DEM " + money + " worth of cans."));
+			if (GUI.Button(new Rect(0,0,160,30), "Try again!")){
+				
+				GameObject getPlayer2 = GameObject.Find("Player2D");
+				PlayerControl playerControlVar = getPlayer2.GetComponent<PlayerControl>();
+    			playerControlVar.Start();
+
+				score = 0F;
+				money = 0F;
+				initTime = 60F;
+				level = 1;
+				showButton = false;
+				showStartButton = false;
+				running = true;
+				gameOverBool = false;
+
+			}
 		}
     }
     
@@ -107,16 +140,17 @@ public class InitGame : MonoBehaviour {
     // Function to reduce score/cans on nextLevel. Never goes below 0.
     	score = Mathf.Clamp((score - levelArg * 2), 0, 100);
     // More resets on next level
-    	initTime = 20F;
+    	initTime = 60F;
     	level ++;
     // Create cans
-       	for (int y = 0; y < 4; y++) {
-       		float yPos = -1.5f + y;
-        	for (int x = 0; x < 6; x++) {
-        		float xPos = -2.5f + x;
+
+       	for (int y = -4; y < 3; y++) {
+       		//float yPos = -3.5f + y;
+        	for (int x = -3; x < 7; x++) {
+        		//float xPos = -2.5f + x;
         		float spawnOrNot = (Random.Range(-1.0F, 1.0F));
         		if(spawnOrNot > 0){
-        			Instantiate(Can, new Vector3(xPos, yPos, 0), Quaternion.identity);
+        			Instantiate(Can, new Vector3(x, y, 0), Quaternion.identity);
         		} else {
 
         		}            	
