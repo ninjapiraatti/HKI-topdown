@@ -6,10 +6,12 @@ public class InitGame : MonoBehaviour {
 
 	public Transform Can;
 	public float score = 0F;
+	public float metal = 0F;
 	public float money = 0F;
 	public Text moneyString;
 	public Text timeString;
 	public Text cansString;
+	public Text metalString;
 	public float initTime = 60F;
 	public bool running = true;
 	public bool gameOverBool = false;
@@ -17,6 +19,8 @@ public class InitGame : MonoBehaviour {
 	public bool showButton = false;
 	public bool showStartButton = true;
 	public Texture btnTexture;
+	public GameObject beast2;
+	public GameObject[] pileobjects;
 
 	// Use this for initialization
 	void Start () {
@@ -26,7 +30,9 @@ public class InitGame : MonoBehaviour {
         		//float xPos = -2.5f + x;
         		float spawnOrNot = (Random.Range(-1.0F, 1.0F));
         		if(spawnOrNot > 0){
-        			Instantiate(Can, new Vector3(x, y, 0), Quaternion.identity);
+        			float deviateX = (Random.Range(-0.7F, 0.7F));
+        			float deviateY = (Random.Range(-0.7F, 0.7F));
+        			Instantiate(Can, new Vector3(x + deviateX, y + deviateY, 0), Quaternion.identity);
         		} else {
 
         		}            	
@@ -46,6 +52,11 @@ public class InitGame : MonoBehaviour {
 	// Initialize cans text
 		GameObject cansObjectVar = GameObject.Find("cansObject");
     	cansString = cansObjectVar.GetComponent<Text>();
+    // Initialize metal text
+    	GameObject metalObjectVar = GameObject.Find("metalObject");
+    	metalString = metalObjectVar.GetComponent<Text>();
+    // Init metal piles
+    	pileobjects = GameObject.FindGameObjectsWithTag("pile");
    	}
 	// Update is called once per frame
 	void Update () {
@@ -53,6 +64,7 @@ public class InitGame : MonoBehaviour {
 		moneyString.text="Money : DEM " + money;
 		timeString.text="time left : " + initTime;
 		cansString.text= "Cans: " + score;
+		metalString.text= "Metal: " + metal;
 		if (initTime < 1){
 			timeOut();
 		}
@@ -67,7 +79,7 @@ public class InitGame : MonoBehaviour {
 
     void timeOut () {
     	running = false;
-    	if(level > 4){
+    	if(level > 3){
     		gameOverBool = true;
     		showButton = false;
     	}
@@ -80,13 +92,17 @@ public class InitGame : MonoBehaviour {
     	if(showButton == true){
     		if(score > 0){
 	    		GUI.contentColor = Color.black;
-	    		GUI.Label(new Rect(0, 30, 230, 20), ("Over the night you lost some cans."));
+	    		GUI.Label(new Rect(200, 230, 230, 20), ("Over the night you lost some cans."));
+    		} else if(metal > 0){
+    			GameObject getPlayer2 = GameObject.Find("Player2D");
+				PlayerControl playerControlVar = getPlayer2.GetComponent<PlayerControl>();
+    			playerControlVar.carryWeight = (metal * 0.5F);
     		} else {
     			GameObject getPlayer2 = GameObject.Find("Player2D");
 				PlayerControl playerControlVar = getPlayer2.GetComponent<PlayerControl>();
     			playerControlVar.carryWeight = 0;
     		}
-	    	if (GUI.Button(new Rect(0,0,160,30), "Next Level")){
+	    	if (GUI.Button(new Rect(200,200,160,30), "Next Level")){
 	    	// Restore speed according to lost cans
 	    		if(score > (level * 2)){
 	    			GameObject getPlayer2 = GameObject.Find("Player2D");
@@ -108,15 +124,23 @@ public class InitGame : MonoBehaviour {
 		if(gameOverBool == true){
 			running = false;
 			GUI.contentColor = Color.black;
-			GUI.Label(new Rect(0, 30, 260, 20), ("Game over! You collected DEM " + money + " worth of cans."));
+			GUI.Label(new Rect(0, 30, 290, 20), ("Game over! You collected DEM " + money + " worth of cans."));
 			if (GUI.Button(new Rect(0,0,160,30), "Try again!")){
 				
 				GameObject getPlayer2 = GameObject.Find("Player2D");
 				PlayerControl playerControlVar = getPlayer2.GetComponent<PlayerControl>();
     			playerControlVar.Start();
 
+    			
+    			for(int i = 0; i < pileobjects.Length; i++)
+		        {
+		            Debug.Log("Pile "+i );
+		            pileobjects[i].SetActive(true);
+		        }
+
 				score = 0F;
 				money = 0F;
+				metal = 0F;
 				initTime = 60F;
 				level = 1;
 				showButton = false;
@@ -150,13 +174,19 @@ public class InitGame : MonoBehaviour {
         		//float xPos = -2.5f + x;
         		float spawnOrNot = (Random.Range(-1.0F, 1.0F));
         		if(spawnOrNot > 0){
-        			Instantiate(Can, new Vector3(x, y, 0), Quaternion.identity);
+        			float deviateX = (Random.Range(-0.7F, 0.7F));
+        			float deviateY = (Random.Range(-0.7F, 0.7F));
+        			Instantiate(Can, new Vector3(x + deviateX, y + deviateY, 0), Quaternion.identity);
         		} else {
 
         		}            	
         	}
     	}
-
+    // Add beast
+    	if(level > 1){
+    		//GameObject beast2 = GameObject.Find("Beast2");
+    		beast2.SetActive(true);
+    	}
     }
 
     void gameOver () {

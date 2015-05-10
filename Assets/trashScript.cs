@@ -16,9 +16,11 @@ public class trashScript : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D coll)
     {
-    	GameObject getPlayer2 = GameObject.Find("Player2D");
-		PlayerControl playerControlVar = getPlayer2.GetComponent<PlayerControl>();
-		playerControlVar.health = 1.0f;
-		GetComponent<AudioSource>().Play();
+    	if(coll.gameObject.name == "Player2D"){
+    		GameObject getPlayer2 = GameObject.Find("Player2D");
+			PlayerControl playerControlVar = getPlayer2.GetComponent<PlayerControl>();
+			playerControlVar.health = 1.0f;
+			GetComponent<AudioSource>().Play();
+		}
 	}
 }
